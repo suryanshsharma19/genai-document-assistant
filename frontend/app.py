@@ -6,6 +6,7 @@ from typing import List, Dict, Any, Optional
 import uuid
 from datetime import datetime
 import logging
+import os
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -17,8 +18,8 @@ from components.document_viewer import DocumentViewer
 from components.challenge_mode import ChallengeMode
 from utils.ui_helpers import UIHelpers
 
-# Configuration
-BACKEND_URL = "http://localhost:8000"
+# Configuration - Use environment variable for backend URL
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 API_BASE = f"{BACKEND_URL}/api/v1"
 
 
