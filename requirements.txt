@@ -24,7 +24,7 @@ faiss-cpu==1.7.4
 
 # Vector Database
 chromadb==0.4.15
-qdrant-client>=1.14.0
+qdrant-client==1.13.0
 
 
 # Text Processing
