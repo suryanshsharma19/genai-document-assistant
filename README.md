@@ -45,7 +45,7 @@ A sophisticated AI-powered document analysis and Q&A system built with FastAPI a
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/suryanshsharma19/genai-document-assistant.git
 cd genai_document_assistant
 ```
 

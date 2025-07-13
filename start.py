@@ -31,7 +31,7 @@ def check_spacy_model():
     """Check if spaCy model is installed."""
     print("🔍 Checking spaCy model...")
     print("✅ spaCy model check skipped (not required)")
-    return True
+            return True
 
 def check_env_file():
     """Check if .env file exists."""

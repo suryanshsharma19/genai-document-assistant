@@ -639,9 +639,9 @@ class AdvancedDocumentProcessor:
             noun_phrases = [phrase.lower() for phrase in noun_phrases 
                            if len(phrase.split()) <= 3 and len(phrase) > 3]
 
-            # Combine with keywords
-            all_topics = list(set(top_keywords + noun_phrases))
-            return all_topics[:10]
+                # Combine with keywords
+                all_topics = list(set(top_keywords + noun_phrases))
+                return all_topics[:10]
 
         except Exception as e:
             logger.warning(f"Topic extraction failed: {str(e)}")
