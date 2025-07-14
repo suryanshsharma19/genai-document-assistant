@@ -1,5 +1,7 @@
 # Backend Requirements for GenAI Document Assistant
 # Use this file for backend (FastAPI) deployments
+# Requires Python 3.10 (or 3.11). Do NOT use Python 3.13.
+# If using pip-tools or pip, ensure your environment is Python 3.10/3.11 before installing.
 
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
