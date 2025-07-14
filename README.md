@@ -223,6 +223,23 @@ docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 docker-compose up -d --scale backend=3 --scale frontend=2
 ```
 
+## Deployment Instructions
+
+### Streamlit Frontend (Streamlit Cloud)
+- Use `requirements.txt` (frontend-only dependencies)
+- Deploy on Streamlit Cloud or similar platforms
+- Set the `BACKEND_URL` environment variable to point to your backend API
+
+### FastAPI Backend
+- Use `requirements-backend.txt` (full backend dependencies, including ML/NLP)
+- Deploy on a platform that supports all dependencies (e.g., Railway, Render, local server)
+- Make sure Python version is 3.10 or 3.11 (not 3.13)
+
+### Why are requirements split?
+- Many AI/ML libraries do not support Python 3.13 or require system-level build tools
+- Streamlit Cloud only needs frontend dependencies; backend needs full ML stack
+- This separation ensures smooth deployment for both parts
+
 ## Troubleshooting
 
 ### Common Issues
