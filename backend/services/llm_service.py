@@ -6,6 +6,7 @@ import openai
 import anthropic
 import httpx
 import json
+import google.generativeai as genai
 
 from ..core.config import settings
 from ..models.schemas import SearchResult, LLMResponse
@@ -309,3 +310,56 @@ Format your response as a JSON array of question objects."""
             })
 
         return questions
+
+
+class GeminiProvider(OpenAIProvider):
+    def __init__(self):
+        if not settings.GEMINI_API_KEY:
+            raise ValueError("Gemini API key not provided")
+        genai.configure(api_key=settings.GEMINI_API_KEY)
+        self.model = genai.GenerativeModel('gemini-pro')
+
+    async def generate_response(
+            self,
+            prompt: str,
+            context: List[SearchResult],
+            stream: bool = False,
+            **kwargs
+    ) -> AsyncGenerator[str, None]:
+        try:
+            # Prepare context
+            context_text = "\n".join([f"[Context {i+1}] {r.metadata.get('filename', 'Unknown')}: {r.content}" for i, r in enumerate(context)])
+            user_prompt = f"Context from documents:\n{context_text}\n\nQuestion: {prompt}\n\nPlease provide a detailed answer based on the context above. Include specific references to support your response."
+            # Gemini API is synchronous, so run in executor
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                None,
+                lambda: self.model.generate_content(user_prompt)
+            )
+            yield response.text
+        except Exception as e:
+            logger.error(f"Gemini API error: {str(e)}")
+            raise LLMServiceError(f"Failed to generate response: {str(e)}")
+
+    async def generate_questions(
+            self,
+            content: str,
+            difficulty: str = "medium",
+            num_questions: int = 3
+    ) -> List[Dict[str, Any]]:
+        try:
+            prompt = f"""Based on the following document content, generate {num_questions} {difficulty} difficulty questions that test comprehension and reasoning.\n\nDocument content:\n{content[:3000]}...\n\nFor each question, provide:\n1. The question text\n2. The correct answer\n3. The question type (factual, inferential, analytical)\n4. A brief explanation of why this answer is correct\n\nFormat your response as a JSON array of question objects with the following structure:\n[\n  {{\n    \"question_text\": \"Your question here\",\n    \"correct_answer\": \"The correct answer\",\n    \"question_type\": \"factual/inferential/analytical\",\n    \"explanation\": \"Brief explanation\",\n    \"difficulty_level\": \"{difficulty}\"\n  }}\n]"""
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                None,
+                lambda: self.model.generate_content(prompt)
+            )
+            try:
+                questions = json.loads(response.text)
+                return questions
+            except json.JSONDecodeError:
+                logger.warning("Failed to parse JSON response, creating fallback questions")
+                return self._create_fallback_questions(content, num_questions, difficulty)
+        except Exception as e:
+            logger.error(f"Error generating questions: {str(e)}")
+            raise LLMServiceError(f"Failed to generate questions: {str(e)}")

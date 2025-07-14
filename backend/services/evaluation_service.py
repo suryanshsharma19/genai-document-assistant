@@ -7,7 +7,7 @@ import json
 
 from ..core.config import settings
 from ..models.schemas import GeneratedQuestion, AnswerEvaluationResponse
-from ..services.llm_service import OpenAIProvider, AnthropicProvider
+from ..services.llm_service import OpenAIProvider, AnthropicProvider, GeminiProvider
 from ..core.exceptions import LLMServiceError
 
 logger = logging.getLogger(__name__)
@@ -26,6 +26,8 @@ class AnswerEvaluationService:
             return OpenAIProvider()
         elif settings.DEFAULT_LLM_PROVIDER == "anthropic":
             return AnthropicProvider()
+        elif settings.DEFAULT_LLM_PROVIDER == "gemini":
+            return GeminiProvider()
         else:
             raise ValueError(f"Unsupported LLM provider: {settings.DEFAULT_LLM_PROVIDER}")
 
