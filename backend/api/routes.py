@@ -115,7 +115,7 @@ async def process_document_background(document_id: int, file_path: Path):
         document.processing_time = processed_doc.processing_time
         document.summary = processed_doc.summary
         document.key_topics = processed_doc.key_topics
-        document.metadata = processed_doc.metadata.dict()
+        document.doc_metadata = processed_doc.metadata.dict()
         document.processing_status = "completed"
         document.processed_at = datetime.utcnow()
 
@@ -129,7 +129,7 @@ async def process_document_background(document_id: int, file_path: Path):
                 content_hash=chunk.metadata.chunk_id,
                 word_count=chunk.metadata.word_count,
                 char_count=chunk.metadata.char_count,
-                metadata=chunk.metadata.dict(),
+                doc_metadata=chunk.metadata.dict(),
                 estimated_page=chunk.metadata.estimated_page,
                 section_title=chunk.metadata.section_title,
                 embedding_model=settings.EMBEDDING_MODEL,

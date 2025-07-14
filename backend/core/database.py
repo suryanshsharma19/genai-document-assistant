@@ -51,7 +51,7 @@ class Document(Base):
     # Content
     summary = Column(Text)
     key_topics = Column(JSON)
-    metadata = Column(JSON)
+    doc_metadata = Column(JSON)
 
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -78,7 +78,7 @@ class DocumentChunk(Base):
     char_count = Column(Integer, default=0)
 
     # Metadata
-    metadata = Column(JSON)
+    doc_metadata = Column(JSON)
     estimated_page = Column(Integer)
     section_title = Column(String(255))
 
